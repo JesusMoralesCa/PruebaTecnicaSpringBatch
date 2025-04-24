@@ -24,8 +24,7 @@ public class FacturaItemReader implements ItemReader<Factura> {
     @Override
     public Factura read() throws Exception {
         if (facturas == null) {
-            // Filtra las facturas basándose en la fecha
-            System.out.println("Cargando facturas con fecha: " + fecha); // Log para verificar la fecha
+            System.out.println("Cargando facturas con fecha: " + fecha);
             facturas = facturaRepository.findByFechaDeVencimientoAndExtraccionPago(fecha, 0);
             System.out.println("Número de facturas cargadas: " + facturas.size());
             FacturaItemUpdater(facturas);
@@ -34,12 +33,11 @@ public class FacturaItemReader implements ItemReader<Factura> {
         if (currentIndex < facturas.size()) {
             return facturas.get(currentIndex++);
         }
-        return null; // No hay más elementos
+        return null;
     }
 
     public void FacturaItemUpdater(List<Factura> facturas){
         for (Factura factura : facturas) {
-            // Aquí actualizas las facturas en la base de datos
             factura.setExtraccionPago(1);
             facturaRepository.save(factura);
             System.out.println("Actualizada factura con ID " + factura.getId() + ", extraccionPago: " + factura.getExtraccionPago());

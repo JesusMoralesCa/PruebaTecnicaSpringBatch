@@ -36,7 +36,6 @@ public class BatchConfig {
         this.jobLauncher = jobLauncher;
     }
 
-    // Definimos el Job que se ejecutará al arrancar
     @Bean
     public Job extraccionFacturasJob(JobRepository jobRepository) {
         return new JobBuilder("extraccionFacturasJob", jobRepository)
@@ -50,8 +49,8 @@ public class BatchConfig {
     public Step step1(JobRepository jobRepository) {
         return new StepBuilder("step1", jobRepository)
                 .<Factura, Factura>chunk(10, transactionManager)
-                .reader(itemReader(null)) // Lector para leer las facturas de Oracle
-                .processor(new FacturaProcessor()) // Procesador si es necesario
+                .reader(itemReader(null)) // Lector para leer las facturas
+                .processor(new FacturaProcessor())
                 .writer(itemWriter()) // Escribirá en el archivo CSV
                 .build();
     }
@@ -71,11 +70,7 @@ public class BatchConfig {
         return new FacturaItemWriter(); // Escribirá las facturas extraídas en el archivo CSV
     }
 
-    /**
-     * Método que obtiene la fecha desde los parámetros del Job
-     */
     private LocalDate getFechaFromJobParameters() {
-        // Obtener el parámetro de fecha desde los parámetros del Job
         String fechaParam = System.getProperty("fecha");
         return fechaParam != null ? LocalDate.parse(fechaParam) : LocalDate.now();
     }
@@ -83,7 +78,6 @@ public class BatchConfig {
     @Bean
     public CommandLineRunner runJob(Job job) {
         return args -> {
-            // Si no hay parámetro "fecha", no ejecutar el job
             String fechaParam = getFechaParam(args);
             if (fechaParam == null) {
                 System.out.println("No se proporcionó el parámetro --fecha, el job no se ejecutará.");
@@ -101,9 +95,6 @@ public class BatchConfig {
         };
     }
 
-    /**
-     * Método que obtiene el parámetro de fecha de los argumentos de la línea de comandos.
-     */
     private String getFechaParam(String[] args) {
         // Busca el parámetro "fecha" en los argumentos de la línea de comandos
         for (String arg : args) {
@@ -111,6 +102,6 @@ public class BatchConfig {
                 return arg.split("=")[1]; // Devuelve la fecha si está presente
             }
         }
-        return null; // Si no está presente, devuelve null
+        return null;
     }
 }
