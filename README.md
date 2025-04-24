@@ -44,7 +44,10 @@ Componentes del Proyecto
   2. Construir el Proyecto
   
   Navega al directorio del proyecto y construye el proyecto con Maven:
-  mvn clean install
+  mvn clean install   
+  
+  //  
+  
   mvn clean package
 
   3. Arranca el proyecto junto a un parametro de fecha para extraer la factura que quieras.
